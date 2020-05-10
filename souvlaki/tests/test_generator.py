@@ -91,7 +91,28 @@ def test_generate_name_complex():
     assert sv.generate_from_tokens(tokens, SimpleWordSource()) == 'tricky_TrickyKNIGHT'
 
 
+def test_generate_two_names():
+    tokens = [('INTEGER', '2'), ('SPACE', ' '), ('ADJ', 'adj'), ('DELIMITER', ' '),
+              ('NOUN', 'noun')]
+
+    assert sv.generate_from_tokens(tokens, SimpleWordSource()) == ['tricky knight'] * 2
+
+
+def test_generate_zero_names_fails():
+    tokens = [('INTEGER', '0'), ('SPACE', ' '), ('ADJ', 'adj'), ('DELIMITER', ' '),
+              ('NOUN', 'noun')]
+
+    with pytest.raises(Exception):
+        sv.generate_from_tokens(tokens, SimpleWordSource())
+
+
 def test_generate_end_to_end():
     spec = 'adj&Adj ADJ_noun.NOUN'
 
     assert sv.generate(spec, SimpleWordSource()) == 'trickyTricky TRICKY_knight.KNIGHT'
+
+
+def test_generate_three_names_end_to_end():
+    spec = '3 adj adj noun'
+
+    assert sv.generate(spec, SimpleWordSource()) == ['tricky tricky knight'] * 3

@@ -2,9 +2,11 @@ from lark import Lark
 
 
 grammar = """
-    spec: (NOUN | ADJ) (DELIMITER (NOUN | ADJ))*
+    spec: (INTEGER SPACE)? (NOUN | ADJ) (DELIMITER (NOUN | ADJ))*
 
-    DELIMITER: "-" | " " | "_" | "." | "+" | "/" | ":" | "&"
+    INTEGER: /[0-9]+/
+    SPACE: " "
+    DELIMITER: SPACE | "-" | "_" | "." | "+" | "/" | ":" | "&"
     NOUN: "noun" | "Noun" | "$Noun" | "NOUN"
     ADJ: "adj" | "Adj" | "$Adj" | "ADJ" | "adjective" | "Adjective" | "$Adjective" | "ADJECTIVE"
 """

@@ -66,3 +66,51 @@ def test_invalid_delimiter_fails():
 
     with pytest.raises(Exception):
         parsed = sv.parse(string)
+
+
+def test_parse_single_digit_integer():
+    string = '1 adj adj noun'
+
+    parsed = sv.parse(string)
+    expected = [('INTEGER', '1'), ('SPACE', ' '), ('ADJ', 'adj'), ('DELIMITER', ' '),
+                ('ADJ', 'adj'), ('DELIMITER', ' '), ('NOUN', 'noun')]
+
+    assert parsed == expected
+
+
+def test_parse_multiple_digit_integer():
+    string = '100 adj adj noun'
+
+    parsed = sv.parse(string)
+    expected = [('INTEGER', '100'), ('SPACE', ' '), ('ADJ', 'adj'), ('DELIMITER', ' '),
+                ('ADJ', 'adj'), ('DELIMITER', ' '), ('NOUN', 'noun')]
+
+    assert parsed == expected
+
+
+def test_parse_negative_integer_fails():
+    string = '-100 adj adj noun'
+
+    with pytest.raises(Exception):
+        parsed = sv.parse(string)
+
+
+def test_parse_float_fails():
+    string = '10.0 adj adj noun'
+
+    with pytest.raises(Exception):
+        parsed = sv.parse(string)
+
+
+def test_parse_more_than_one_integer_fails():
+    string = '10 10 adj adj noun'
+
+    with pytest.raises(Exception):
+        parsed = sv.parse(string)
+
+
+def test_only_integer_fails():
+    string = '10'
+
+    with pytest.raises(Exception):
+        parsed = sv.parse(string)

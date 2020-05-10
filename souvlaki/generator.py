@@ -26,15 +26,35 @@ def generate_word(token, word_source):
 
 
 def generate_from_tokens(tokens, word_source):
-    name = ''
-    for token in tokens:
-        if token[0] == 'DELIMITER':
-            if not token[1] == '&':
-                name += token[1]
-        else:
-            name += generate_word(token, word_source)
+    if len(tokens) == 0:
+        return ''
 
-    return name
+    num_names = 1
+
+    if tokens[0][0] == 'INTEGER':
+        if len(tokens) < 2:
+            raise ValueError('Integer token must be followed by a space')
+        num_names = int(tokens[0][1])
+        tokens = tokens[2:]
+    
+    if num_names == 0:
+        raise ValueError('Number of names to generate must be nonzero')
+
+    names = []
+    for i in range(num_names):
+        name = ''
+        for token in tokens:
+            if token[0] == 'DELIMITER':
+                if not token[1] == '&':
+                    name += token[1]
+            else:
+                name += generate_word(token, word_source)
+        names.append(name)
+
+    if num_names == 1:
+        return names[0]
+
+    return names
 
 
 def generate(string, word_source):

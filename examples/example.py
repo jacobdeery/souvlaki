@@ -27,10 +27,11 @@ def main():
 
     source = WordSource(nouns, adjectives)
 
-    spec = '$Adj $Adj $Adj $Noun'
+    spec = '10 $Adj $Adj $Adj $Noun'
+    names = sv.generate(spec, source)
 
-    for i in range(20):
-        print(sv.generate(spec, source))
+    for name in names:
+        print(name)
 
 
 if __name__ == "__main__":
