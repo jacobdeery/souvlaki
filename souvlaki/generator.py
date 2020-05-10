@@ -1,3 +1,6 @@
+import souvlaki as sv
+
+
 def mutate_word(word, style):
     if style.startswith('$'):
         if len(word) < 2:
@@ -22,7 +25,7 @@ def generate_word(token, word_source):
         raise ValueError('Invalid part of speech: ' + str(token[0]))
 
 
-def generate_name(tokens, word_source):
+def generate_from_tokens(tokens, word_source):
     name = ''
     for token in tokens:
         if token[0] == 'DELIMITER':
@@ -32,3 +35,7 @@ def generate_name(tokens, word_source):
             name += generate_word(token, word_source)
 
     return name
+
+
+def generate(string, word_source):
+    return generate_from_tokens(sv.parse(string), word_source)

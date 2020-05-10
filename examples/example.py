@@ -27,12 +27,10 @@ def main():
 
     source = WordSource(nouns, adjectives)
 
-    input_str = '$Adj $Adj $Adj $Noun'
-
-    tokens = sv.parse(input_str)
+    spec = '$Adj $Adj $Adj $Noun'
 
     for i in range(10):
-        print(sv.generate_name(tokens, source))
+        print(sv.generate(spec, source))
 
 
 if __name__ == "__main__":

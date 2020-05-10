@@ -75,17 +75,23 @@ def test_generate_word_adjective():
 def test_generate_name_empty():
     tokens = []
 
-    assert sv.generate_name(tokens, None) == ''
+    assert sv.generate_from_tokens(tokens, None) == ''
 
 
 def test_generate_name_simple():
     tokens = [('ADJ', 'adj'), ('DELIMITER', ' '), ('NOUN', 'noun')]
 
-    assert sv.generate_name(tokens, SimpleWordSource()) == 'tricky knight'
+    assert sv.generate_from_tokens(tokens, SimpleWordSource()) == 'tricky knight'
 
 
 def test_generate_name_complex():
     tokens = [('ADJ', 'adj'), ('DELIMITER', '_'), ('ADJ', 'Adjective'), ('DELIMITER', '&'),
               ('NOUN', 'NOUN')]
 
-    assert sv.generate_name(tokens, SimpleWordSource()) == 'tricky_TrickyKNIGHT'
+    assert sv.generate_from_tokens(tokens, SimpleWordSource()) == 'tricky_TrickyKNIGHT'
+
+
+def test_generate_end_to_end():
+    spec = 'adj&Adj ADJ_noun.NOUN'
+
+    assert sv.generate(spec, SimpleWordSource()) == 'trickyTricky TRICKY_knight.KNIGHT'
