@@ -29,7 +29,7 @@ def main():
 
     spec = '$Adj $Adj $Adj $Noun'
 
-    for i in range(10):
+    for i in range(20):
         print(sv.generate(spec, source))
 
 
