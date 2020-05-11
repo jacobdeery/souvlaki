@@ -21,6 +21,8 @@ def generate_word(token, word_source):
         return(mutate_word(word_source.noun(), token[1]))
     elif token[0] == 'ADJ':
         return(mutate_word(word_source.adjective(), token[1]))
+    elif token[0] == 'PREFIX':
+        return(mutate_word(word_source.prefix(), token[1]))
     else:
         raise ValueError('Invalid part of speech: ' + str(token[0]))
 

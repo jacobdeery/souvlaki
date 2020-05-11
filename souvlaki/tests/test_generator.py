@@ -8,6 +8,8 @@ class SimpleWordSource:
         return 'knight'
     def adjective(self):
         return 'tricky'
+    def prefix(self):
+        return 'proto'
 
 
 def test_mutate_word_invalid():
@@ -29,23 +31,29 @@ def test_mutate_adjective():
     adjective = 'incredulous'
 
     assert sv.mutate_word(adjective, 'adj') == 'incredulous'
-    assert sv.mutate_word(adjective, 'adjective') == 'incredulous'
     assert sv.mutate_word(adjective, 'Adj') == 'Incredulous'
-    assert sv.mutate_word(adjective, 'Adjective') == 'Incredulous'
     assert sv.mutate_word(adjective, 'ADJ') == 'INCREDULOUS'
-    assert sv.mutate_word(adjective, 'ADJECTIVE') == 'INCREDULOUS'
+
+
+def test_mutate_prefix():
+    prefix = 'extra'
+
+    assert sv.mutate_word(prefix, 'pre') == 'extra'
+    assert sv.mutate_word(prefix, 'Pre') == 'Extra'
+    assert sv.mutate_word(prefix, 'PRE') == 'EXTRA'
 
 
 def test_mutate_word_titlecase():
     allcaps_noun = 'ATM'
     allcaps_adj = 'FURIOUS'
+    allcaps_prefix = 'META'
 
     assert sv.mutate_word(allcaps_noun, 'Noun') == 'Atm'
     assert sv.mutate_word(allcaps_noun, '$Noun') == 'ATM'
     assert sv.mutate_word(allcaps_adj, 'Adj') == 'Furious'
     assert sv.mutate_word(allcaps_adj, '$Adj') == 'FURIOUS'
-    assert sv.mutate_word(allcaps_adj, 'Adjective') == 'Furious'
-    assert sv.mutate_word(allcaps_adj, '$Adjective') == 'FURIOUS'
+    assert sv.mutate_word(allcaps_prefix, 'Pre') == 'Meta'
+    assert sv.mutate_word(allcaps_prefix, '$Pre') == 'META'
 
 
 def test_generate_word_noun():
@@ -84,35 +92,41 @@ def test_generate_name_simple():
     assert sv.generate_from_tokens(tokens, SimpleWordSource()) == 'tricky knight'
 
 
-def test_generate_name_complex():
-    tokens = [('ADJ', 'adj'), ('DELIMITER', '_'), ('ADJ', 'Adjective'), ('DELIMITER', '&'),
-              ('NOUN', 'NOUN')]
+def test_generate_name_prefix():
+    tokens = [('ADJ', 'adj'), ('DELIMITER', ' '), ('PREFIX', 'pre'), ('NOUN', 'noun')]
 
-    assert sv.generate_from_tokens(tokens, SimpleWordSource()) == 'tricky_TrickyKNIGHT'
+    assert sv.generate_from_tokens(tokens, SimpleWordSource()) == 'tricky protoknight'
+
+
+def test_generate_name_complex():
+    tokens = [('ADJ', 'adj'), ('DELIMITER', '_'), ('PREFIX', '$Pre'), ('ADJ', 'Adj'),
+              ('DELIMITER', '&'), ('NOUN', 'NOUN')]
+
+    assert sv.generate_from_tokens(tokens, SimpleWordSource()) == 'tricky_ProtoTrickyKNIGHT'
 
 
 def test_generate_two_names():
     tokens = [('INTEGER', '2'), ('SPACE', ' '), ('ADJ', 'adj'), ('DELIMITER', ' '),
-              ('NOUN', 'noun')]
+              ('PREFIX', 'pre'), ('NOUN', 'noun')]
 
-    assert sv.generate_from_tokens(tokens, SimpleWordSource()) == ['tricky knight'] * 2
+    assert sv.generate_from_tokens(tokens, SimpleWordSource()) == ['tricky protoknight'] * 2
 
 
 def test_generate_zero_names_fails():
     tokens = [('INTEGER', '0'), ('SPACE', ' '), ('ADJ', 'adj'), ('DELIMITER', ' '),
-              ('NOUN', 'noun')]
+              ('PREFIX', 'pre'), ('NOUN', 'noun')]
 
     with pytest.raises(Exception):
         sv.generate_from_tokens(tokens, SimpleWordSource())
 
 
 def test_generate_end_to_end():
-    spec = 'adj&Adj ADJ_noun.NOUN'
+    spec = 'adj&Adj ADJ_noun.PRENOUN'
 
-    assert sv.generate(spec, SimpleWordSource()) == 'trickyTricky TRICKY_knight.KNIGHT'
+    assert sv.generate(spec, SimpleWordSource()) == 'trickyTricky TRICKY_knight.PROTOKNIGHT'
 
 
 def test_generate_three_names_end_to_end():
-    spec = '3 adj adj noun'
+    spec = '3 adj preadj noun'
 
-    assert sv.generate(spec, SimpleWordSource()) == ['tricky tricky knight'] * 3
+    assert sv.generate(spec, SimpleWordSource()) == ['tricky prototricky knight'] * 3
